@@ -1,13 +1,23 @@
 package view;
+import camp.nextstep.edu.missionutils.Console;
+import message.InputMessage;
+
 import java.util.*;
 public class InputView {
     Scanner sc = new Scanner(System.in);
-    public int inputDate(){
-        int date = sc.nextInt();
-        return date;
-    }
+    //방문 날짜 입력받기
+    public String readDate(){
+        System.out.println(InputMessage.DATE_OF_VISIT.getMessage());
 
+        String input = Console.readLine();
+        if(Integer.parseInt(input) < 1 || Integer.parseInt(input) > 31){
+            throw new IllegalArgumentException("[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요.");
+        }
+        return input;
+    }
+    //주문 메뉴와 갯수 입력받기
     public String order(){
+        System.out.println(InputMessage.ORDER.getMessage());
         String order = sc.next();
         return order;
     }
