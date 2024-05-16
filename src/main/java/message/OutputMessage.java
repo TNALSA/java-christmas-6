@@ -11,7 +11,8 @@ public enum OutputMessage {
     TOTAL_BENEFIT_PRICE("<총혜택 금액>"),
     AFTER_DISCOUNT("<할인 후 예상 결제 금액>"),
     WON("원"),
-    EVENT_BADGE("<12월 이벤트 배지>");
+    EVENT_BADGE("<12월 이벤트 배지>"),
+    UNIT("개");
 
     private final String msg;
 
