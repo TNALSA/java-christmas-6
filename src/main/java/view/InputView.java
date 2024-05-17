@@ -1,5 +1,6 @@
 package view;
 import camp.nextstep.edu.missionutils.Console;
+import message.ErrorMessage;
 import message.InputMessage;
 
 import java.util.*;
@@ -11,7 +12,7 @@ public class InputView {
 
         String input = Console.readLine();
         if(Integer.parseInt(input) < 1 || Integer.parseInt(input) > 31){
-            throw new IllegalArgumentException("[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요.");
+            throw new IllegalArgumentException(ErrorMessage.INVALID_DATE.getMessage());
         }
         return input;
     }

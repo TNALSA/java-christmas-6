@@ -22,7 +22,7 @@ public class EventController {
 
     public void divideOrder(String order){
         foodList = orderServiceImpl.divideOrder(order);
-        orderServiceImpl.checkMenu(foodList);
+        orderServiceImpl.isVaildOrder(foodList);
         outputView.benefitPreview(date);
         outputView.showOrderMenu(foodList);
 
