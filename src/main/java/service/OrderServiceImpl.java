@@ -1,6 +1,7 @@
 package service;
 
 import domain.Food;
+import domain.constants.Menu;
 
 import java.util.*;
 
@@ -18,6 +19,20 @@ public class OrderServiceImpl implements OrderService {
             orderList.add(food);
         }
         return orderList;
+    }
+
+    public void checkMenu(List<Food> foodList){
+        for(int i=0 ; i<foodList.size() ; i++){
+            Menu.from(foodList.get(i).getName());
+        }
+    }
+
+    public int beforeDicount(List<Food> foodList){
+        int beforeTotalPrice = 0;
+        for(Food i:foodList) {
+            beforeTotalPrice += Menu.from(i.getName()).getPrice();
+        }
+        return beforeTotalPrice;
     }
 
 

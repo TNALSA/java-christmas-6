@@ -1,5 +1,7 @@
 package domain.constants;
 
+import java.util.*;
+
 public enum Menu {
     MUSHROOM_CREAM_SOUP("에피타이저","양송이수프",6000),
     TAPAS("에피타이저","타파스",5500),
@@ -21,6 +23,13 @@ public enum Menu {
         this.type = type;
         this.name = name;
         this.price = price;
+    }
+
+    public static Menu from(String menu) {
+        return Arrays.stream(Menu.values())
+                .filter(element -> element.name.equals(menu))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요."));
     }
 
     public String getType() {

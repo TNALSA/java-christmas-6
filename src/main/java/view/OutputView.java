@@ -17,4 +17,9 @@ public class OutputView {
         for(Food food:list)
             System.out.println(food.getName()+" "+food.getCount()+OutputMessage.UNIT.getMessage());
     }
+     public void showBeforePrice(int price){
+         System.out.println(OutputMessage.BEFORE_DISCOUNT.getMessage());
+         System.out.println(price);
+     }
+
 }

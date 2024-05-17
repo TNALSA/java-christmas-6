@@ -18,11 +18,22 @@ public class EventController {
         date = inputView.readDate();
         order = inputView.order();
         divideOrder(order);
-        outputView.benefitPreview(date);
     }
+
     public void divideOrder(String order){
         foodList = orderServiceImpl.divideOrder(order);
+        orderServiceImpl.checkMenu(foodList);
+        outputView.benefitPreview(date);
         outputView.showOrderMenu(foodList);
+
+        beforeDiscount(foodList);
+    }
+
+    //할인 전 총 주문 금액을 계산하는 메소드 호출
+    public void beforeDiscount(List<Food> foodList){
+        int price = orderServiceImpl.beforeDicount(foodList);
+        System.out.println(price);
+        outputView.showBeforePrice(price);
     }
 
 
