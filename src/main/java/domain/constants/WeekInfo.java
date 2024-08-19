@@ -14,7 +14,6 @@ public enum WeekInfo {
     WeekInfo(List<DayOfWeek> days){
         this.days = days;
     }
-
     public static WeekInfo from(DayOfWeek dayOfWeek){
         return Arrays.stream(WeekInfo.values())
                 .filter(element -> element.days.contains(dayOfWeek))

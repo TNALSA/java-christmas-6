@@ -7,7 +7,7 @@ public enum Menu {
     TAPAS("에피타이저","타파스",5500),
     CAESAR_SALAD("에피타이저","시저 샐러드",8000),
     TBORN_STEAK("메인","티본스테이크",55000),
-    BARBEQUE_RIB("메인","바베큐립",54000),
+    BARBEQUE_RIB("메인","바비큐립",54000),
     SEAFOOD_PASTAR("메인","해산물파스타",35000),
     CHRISTMAS_PASTAR("메인","크리스마스파스타",25000),
     CHOCO_CAKE("디저트","초코케이크",15000),
