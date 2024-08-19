@@ -13,19 +13,25 @@ public class OutputView {
     public void welcome(){
         System.out.println(OutputMessage.WELCOME.getMessage());
     }
+
     public void benefitPreview(String date){
         System.out.println(OutputMessage.DECEMBER.getMessage() + date + OutputMessage.PREVIEW.getMessage());
+        System.out.println();
     }
+
     public void showOrderMenu(List<Order> list){
         System.out.println(OutputMessage.ORDER_MENU.getMessage());
         for(Order food:list)
             System.out.println(food.getName()+" "+food.getCount()+OutputMessage.UNIT.getMessage());
+        System.out.println();
     }
+
      public void showBeforePrice(int price){
          System.out.println(OutputMessage.BEFORE_DISCOUNT.getMessage());
          System.out.println(price + OutputMessage.WON.getMessage());
          System.out.println();
      }
+
      public void showFreeMenu(Order isFree){
         System.out.println(OutputMessage.BENEFIT_DETAILS.getMessage());
          if(isFree == null){
@@ -33,30 +39,57 @@ public class OutputView {
          }else {
              System.out.println(isFree.getName() + " " + isFree.getCount() + OutputMessage.UNIT.getMessage());
          }
+     }
+
+     public void showBenefitHistory(int christmasPrice, LocalDate date, int dayPrice, int specialPrice, int freePrice){
+         System.out.println(OutputMessage.TOTAL_BENEFIT_PRICE.getMessage());
+
+         System.out.println(OutputMessage.CHRISTMAS_DDAY_DISCOUNT.getMessage() + Math.negateExact(christmasPrice) + OutputMessage.WON.getMessage());
+
+         if(WeekInfo.from(date.getDayOfWeek()).equals(WeekInfo.WEEKDAYS)){
+             System.out.println(OutputMessage.WEEKSDAY_DISCOUNT.getMessage() + Math.negateExact(dayPrice) + OutputMessage.WON.getMessage());
+         }
+         if(WeekInfo.from(date.getDayOfWeek()).equals(WeekInfo.WEEKENDS)){
+             System.out.println(OutputMessage.WEEKEND_DISCOUNT.getMessage() + Math.negateExact(dayPrice));
+         }
+
+         System.out.println(OutputMessage.SPECIAL_DISCOUNT.getMessage() + Math.negateExact(specialPrice) + OutputMessage.WON.getMessage());
+
+         System.out.println(OutputMessage.FREE_EVENT.getMessage() + Math.negateExact(freePrice) + OutputMessage.WON.getMessage());
+
          System.out.println();
      }
 
-     public void showBenefitHistory(int beforeDiscount, int days, List<Order> foodList){
-         System.out.println(OutputMessage.BENEFIT_DETAILS.getMessage());
-
-     }
-
-     public void showChristmasDiscount(int christmasPrice){
-         System.out.println(OutputMessage.CHRISTMAS_DDAY_DISCOUNT.getMessage() + Math.absExact(christmasPrice));
-     }
-
-     public void showDayDiscount(LocalDate date, int dayPrice){
-         if(WeekInfo.from(date.getDayOfWeek()).equals(WeekInfo.WEEKDAYS)){
-             System.out.println(OutputMessage.WEEKSDAY_DISCOUNT.getMessage() + Math.absExact(dayPrice));
-         }else{
-             System.out.println(OutputMessage.WEEKEND_DISCOUNT.getMessage() + Math.absExact(dayPrice));
-         }
-     }
-    public void showSpecialDiscount(int specialPrice){
-
+    public void showTotalBenefit(int totalBenefitPrice){
+        System.out.println(OutputMessage.TOTAL_BENEFIT_PRICE.getMessage());
+        System.out.println(Math.negateExact(totalBenefitPrice) + OutputMessage.WON.getMessage());
+        System.out.println();
     }
-    public void showFreeDiscount(int freePrice){
 
+    public void showAfterDiscount(int afterDiscount){
+        System.out.println(OutputMessage.AFTER_DISCOUNT.getMessage());
+        System.out.println(afterDiscount+OutputMessage.WON.getMessage());
+        System.out.println();
+    }
+
+    public void showEventBadge(int totalDiscount){
+        //12월 이벤트 배지
+        System.out.println(OutputMessage.EVENT_BADGE.getMessage());
+        String badge = null;
+
+        if(totalDiscount < 5000){
+            badge = "없음";
+        }
+        if(totalDiscount >= 5000){
+            badge = "별";
+        }
+        if(totalDiscount >= 10000){
+            badge = "트리";
+        }
+        if (totalDiscount >= 20000) {
+            badge = "산타";
+        }
+        System.out.println(badge);
     }
 
 }

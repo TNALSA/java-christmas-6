@@ -12,9 +12,10 @@ import java.util.*;
 public class EventController {
     private final OutputView outputView = new OutputView();
     private final InputView inputView = new InputView();
-    OrderServiceImpl orderServiceImpl = new OrderServiceImpl();
+    private OrderServiceImpl orderServiceImpl = new OrderServiceImpl();
     String date, order;
     int beforeDiscount = 0, totalDiscount = 0, afterDiscount = 0;
+    int christmasPrice=0, dayPrice=0, specialPrice=0, freePrice = 0;
 
     List<Order> foodList = new ArrayList<Order>();
     public void eventStart(){
@@ -33,6 +34,15 @@ public class EventController {
 
         // 혜택 내역
         benefitHistory(Integer.parseInt(date), foodList);
+
+        // 총혜택 금액
+        totalBenefit(christmasPrice, dayPrice, specialPrice, freePrice);
+
+        //할인 후 예상 결제 금액
+        afterDiscount(beforeDiscount, totalDiscount);
+
+        //12월 이벤트 배지
+        eventBadge(totalDiscount);
 
     }
 
@@ -64,49 +74,29 @@ public class EventController {
     public void benefitHistory(int days, List<Order> foodList){
         LocalDate date = LocalDate.of(2023, 12, days);
         if(beforeDiscount > 10000){
-            int christmasPrice = orderServiceImpl.christmasDiscount(days);
-            int dayPrice = orderServiceImpl.dayDiscount(date, foodList);
-            int specialPrice = orderServiceImpl.specialDiscount(days);
-            int freePrice = orderServiceImpl.freeDiscount(beforeDiscount);
+            christmasPrice = orderServiceImpl.christmasDiscount(days);
+            dayPrice = orderServiceImpl.dayDiscount(date, foodList);
+            specialPrice = orderServiceImpl.specialDiscount(days);
+            freePrice = orderServiceImpl.freeDiscount(beforeDiscount);
 
-            outputView.showChristmasDiscount(christmasPrice);
-            outputView.showDayDiscount(date, dayPrice);
-            outputView.showSpecialDiscount(specialPrice);
-            outputView.showFreeDiscount(freePrice);
-
+            outputView.showBenefitHistory(christmasPrice, date, dayPrice, specialPrice, freePrice);
         }else{
             System.out.println("없음");
         }
+    }
 
-        public void totalBenefit(){
-            orderServiceImpl.
-        }
-        // 총 혜택 금액
-        System.out.println(OutputMessage.TOTAL_BENEFIT_PRICE.getMessage());
-        totalDiscount = christmasPrice + weekPrice + weekendPrice + specialPrice +freePrice;
-        System.out.println(totalDiscount+OutputMessage.WON.getMessage());
+    public void totalBenefit(int christmasPrice, int dayPrice, int specialPrice, int freePrice){
+        totalDiscount = orderServiceImpl.totalBenefit(christmasPrice, dayPrice, specialPrice, freePrice);
+        outputView.showTotalBenefit(totalDiscount);
+    }
 
+    public void afterDiscount(int beforeDiscount, int totalDiscount){
+         afterDiscount = orderServiceImpl.afterDiscount(beforeDiscount, totalDiscount);
+         outputView.showAfterDiscount(afterDiscount);
+    }
 
-        //할인 후 총 예상 결제 금액
-        System.out.println(OutputMessage.AFTER_DISCOUNT.getMessage());
-        afterDiscount = beforeDiscount-totalDiscount;
-        System.out.println(afterDiscount+OutputMessage.WON.getMessage());
-
-
-        //12월 이벤트 배지
-        System.out.println(OutputMessage.EVENT_BADGE.getMessage());
-        if(totalDiscount >= 20000){
-            System.out.println("산타");
-        }else if(totalDiscount >= 10000){
-            System.out.println("트리");
-        } else if (totalDiscount >= 5000) {
-            System.out.println("별");
-        }
-
-        if(totalDiscount==0){
-            System.out.println("없음");
-        }
-
+    public void eventBadge(int totalDiscount){
+        outputView.showEventBadge(totalDiscount);
     }
 
 }

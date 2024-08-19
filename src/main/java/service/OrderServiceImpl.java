@@ -28,14 +28,18 @@ public class OrderServiceImpl implements OrderService {
         for(int i=0 ; i<foodList.size() ; i++){
             // 메뉴 검증
             Menu.from(foodList.get(i).getName());
+
             // 수량 검증
             if(foodList.get(i).getCount()<1){throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());}
+
             // 중복 검증
             for(int j = i+1 ; j<foodList.size() ; j++){
                 if(foodList.get(i).getName().equals(foodList.get(j).getName())){throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());}
             }
+
             totalOrderCount += foodList.get(i).getCount();
         }
+
         // 수량 검증
         if(totalOrderCount >= 20){
             throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());
@@ -74,12 +78,23 @@ public class OrderServiceImpl implements OrderService {
             return weekendsDiscount.discountPrice();
         }
     }
+
     public int specialDiscount(int days){
         SpecialDiscount specialDiscount = new SpecialDiscount(days);
         return specialDiscount.discountPrice();
     }
+
     public int freeDiscount(int beforeDiscount){
         FreeDiscount freeDiscount = new FreeDiscount(beforeDiscount);
         return freeDiscount.discountPrice();
     }
+
+    public int totalBenefit(int christmasPrice, int dayPrice, int specialPrice, int freePrice){
+        return christmasPrice + dayPrice + specialPrice + freePrice;
+    }
+
+    public int afterDiscount(int beforeDiscount, int totalDiscount){
+        return beforeDiscount - totalDiscount;
+    }
+
 }
