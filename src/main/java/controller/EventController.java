@@ -1,14 +1,12 @@
 package controller;
 
 import domain.Order;
-import domain.constants.Menu;
-import domain.constants.WeekInfo;
 import message.OutputMessage;
 import service.OrderServiceImpl;
-import service.discount.*;
 import view.InputView;
 import view.OutputView;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class EventController {
@@ -16,9 +14,8 @@ public class EventController {
     private final InputView inputView = new InputView();
     OrderServiceImpl orderServiceImpl = new OrderServiceImpl();
     String date, order;
-    int beforeDiscount = 0;
-    int totalDiscount = 0;
-    int afterDiscount = 0;
+    int beforeDiscount = 0, totalDiscount = 0, afterDiscount = 0;
+
     List<Order> foodList = new ArrayList<Order>();
     public void eventStart(){
         outputView.welcome();
@@ -28,16 +25,25 @@ public class EventController {
         // 주문 구분 하기
         divideOrder(order);
 
+        // 할인 전 총 주문 금액
         beforeDiscount(foodList);
 
+        // 증정 메뉴
         freeMenu(beforeDiscount);
 
+        // 혜택 내역
         benefitHistory(Integer.parseInt(date), foodList);
+
     }
 
     public void divideOrder(String order){
+        // 주문 메뉴 List에 담기
         foodList = orderServiceImpl.divideOrder(order);
+
+        // 주문 유효성 검사 -> 메뉴 갯수, 중복 여부, 메뉴 존재 여부,
         orderServiceImpl.isVaildOrder(foodList);
+
+        // 출력
         outputView.benefitPreview(date);
         outputView.showOrderMenu(foodList);
     }
@@ -46,7 +52,6 @@ public class EventController {
     public void beforeDiscount(List<Order> foodList){
         beforeDiscount = orderServiceImpl.beforeDicount(foodList);
         outputView.showBeforePrice(beforeDiscount);
-        System.out.println();
     }
 
     // 증정 메뉴
@@ -57,25 +62,25 @@ public class EventController {
 
     // 혜택 내역
     public void benefitHistory(int days, List<Order> foodList){
-        int christmasPrice = orderServiceImpl.christmasDiscount(days);
-        int dayPrice = orderServiceImpl.dayDiscount(days, foodList);
+        LocalDate date = LocalDate.of(2023, 12, days);
+        if(beforeDiscount > 10000){
+            int christmasPrice = orderServiceImpl.christmasDiscount(days);
+            int dayPrice = orderServiceImpl.dayDiscount(date, foodList);
+            int specialPrice = orderServiceImpl.specialDiscount(days);
+            int freePrice = orderServiceImpl.freeDiscount(beforeDiscount);
 
-        int weekPrice = 0;
-        int weekendPrice = 0;
+            outputView.showChristmasDiscount(christmasPrice);
+            outputView.showDayDiscount(date, dayPrice);
+            outputView.showSpecialDiscount(specialPrice);
+            outputView.showFreeDiscount(freePrice);
 
+        }else{
+            System.out.println("없음");
+        }
 
-        System.out.println("크리스마스 디데이 할인: -"+christmasPrice);
-        // 해당 날짜가 평일인지? 주말인지? -> 메소드 호출
-
-
-        // 특별 할인
-        SpecialDiscount specialDiscount = new SpecialDiscount(days);
-        int specialPrice = specialDiscount.discountPrice();
-
-        // 증정 이벤트
-        FreeDiscount freeDiscount = new FreeDiscount(beforeDiscount);
-        int freePrice = freeDiscount.discountPrice();
-
+        public void totalBenefit(){
+            orderServiceImpl.
+        }
         // 총 혜택 금액
         System.out.println(OutputMessage.TOTAL_BENEFIT_PRICE.getMessage());
         totalDiscount = christmasPrice + weekPrice + weekendPrice + specialPrice +freePrice;

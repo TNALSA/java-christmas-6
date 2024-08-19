@@ -5,9 +5,7 @@ import domain.constants.Menu;
 import domain.constants.WeekInfo;
 import message.ErrorMessage;
 import message.OutputMessage;
-import service.discount.ChristmasDiscount;
-import service.discount.WeekdaysDiscount;
-import service.discount.WeekendsDiscount;
+import service.discount.*;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -26,6 +24,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public void isVaildOrder(List<Order> foodList){
+        int totalOrderCount = 0;
         for(int i=0 ; i<foodList.size() ; i++){
             // 메뉴 검증
             Menu.from(foodList.get(i).getName());
@@ -35,6 +34,11 @@ public class OrderServiceImpl implements OrderService {
             for(int j = i+1 ; j<foodList.size() ; j++){
                 if(foodList.get(i).getName().equals(foodList.get(j).getName())){throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());}
             }
+            totalOrderCount += foodList.get(i).getCount();
+        }
+        // 수량 검증
+        if(totalOrderCount >= 20){
+            throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());
         }
     }
 
@@ -59,17 +63,23 @@ public class OrderServiceImpl implements OrderService {
         return christmasDiscount.discountPrice();
     }
 
-    public int dayDiscount(int days, List<Order> foodList){
-        LocalDate date = LocalDate.of(2023, 12, days);
+    public int dayDiscount(LocalDate date, List<Order> foodList){
         if(WeekInfo.from(date.getDayOfWeek()).equals(WeekInfo.WEEKDAYS)){
             // WeekdaysDiscount
             WeekdaysDiscount weekdaysDiscount = new WeekdaysDiscount(foodList);
             return weekdaysDiscount.discountPrice();
-
         }else{
             // WeekendsDiscount
             WeekendsDiscount weekendsDiscount = new WeekendsDiscount(foodList);
             return weekendsDiscount.discountPrice();
         }
+    }
+    public int specialDiscount(int days){
+        SpecialDiscount specialDiscount = new SpecialDiscount(days);
+        return specialDiscount.discountPrice();
+    }
+    public int freeDiscount(int beforeDiscount){
+        FreeDiscount freeDiscount = new FreeDiscount(beforeDiscount);
+        return freeDiscount.discountPrice();
     }
 }
