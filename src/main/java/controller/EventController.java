@@ -78,11 +78,9 @@ public class EventController {
             dayPrice = orderServiceImpl.dayDiscount(date, foodList);
             specialPrice = orderServiceImpl.specialDiscount(days);
             freePrice = orderServiceImpl.freeDiscount(beforeDiscount);
-
-            outputView.showBenefitHistory(christmasPrice, date, dayPrice, specialPrice, freePrice);
-        }else{
-            System.out.println("없음");
         }
+
+        outputView.showBenefitHistory(beforeDiscount, christmasPrice, date, dayPrice, specialPrice, freePrice);
     }
 
     public void totalBenefit(int christmasPrice, int dayPrice, int specialPrice, int freePrice){
@@ -91,7 +89,7 @@ public class EventController {
     }
 
     public void afterDiscount(int beforeDiscount, int totalDiscount){
-         afterDiscount = orderServiceImpl.afterDiscount(beforeDiscount, totalDiscount);
+         afterDiscount = orderServiceImpl.afterDiscount(beforeDiscount, totalDiscount, freePrice);
          outputView.showAfterDiscount(afterDiscount);
     }
 

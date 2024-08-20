@@ -4,7 +4,6 @@ import domain.Order;
 import domain.constants.Menu;
 import domain.constants.WeekInfo;
 import message.ErrorMessage;
-import message.OutputMessage;
 import service.discount.*;
 
 import java.time.LocalDate;
@@ -93,8 +92,8 @@ public class OrderServiceImpl implements OrderService {
         return christmasPrice + dayPrice + specialPrice + freePrice;
     }
 
-    public int afterDiscount(int beforeDiscount, int totalDiscount){
-        return beforeDiscount - totalDiscount;
+    public int afterDiscount(int beforeDiscount, int totalDiscount, int freePrice){
+        return beforeDiscount - totalDiscount + freePrice;
     }
 
 }
