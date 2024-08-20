@@ -38,7 +38,7 @@ public class OutputView {
         System.out.println(OutputMessage.PRESENTATION.getMessage());
 
          if(isFree != null){
-             System.out.print(isFree.getName() + " " + isFree.getCount() + OutputMessage.UNIT.getMessage());
+             System.out.println(isFree.getName() + " " + isFree.getCount() + OutputMessage.UNIT.getMessage());
          }
 
          if(isFree == null){
