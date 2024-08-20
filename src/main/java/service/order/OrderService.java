@@ -1,4 +1,4 @@
-package service;
+package service.order;
 
 import domain.Order;
 import java.util.*;

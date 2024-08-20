@@ -1,12 +1,11 @@
-package service;
+package service.order;
 
+import domain.Discount;
 import domain.Order;
 import domain.constants.Menu;
-import domain.constants.WeekInfo;
 import message.ErrorMessage;
-import service.discount.*;
+import service.order.OrderService;
 
-import java.time.LocalDate;
 import java.util.*;
 
 public class OrderServiceImpl implements OrderService {
@@ -25,21 +24,13 @@ public class OrderServiceImpl implements OrderService {
     public void isVaildOrder(List<Order> foodList){
         int totalOrderCount = 0;
         for(int i=0 ; i<foodList.size() ; i++){
-            // 메뉴 검증
             Menu.from(foodList.get(i).getName());
-
-            // 수량 검증
             if(foodList.get(i).getCount()<1){throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());}
-
-            // 중복 검증
             for(int j = i+1 ; j<foodList.size() ; j++){
                 if(foodList.get(i).getName().equals(foodList.get(j).getName())){throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());}
             }
-
             totalOrderCount += foodList.get(i).getCount();
         }
-
-        // 수량 검증
         if(totalOrderCount >= 20){
             throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());
         }
@@ -61,39 +52,20 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    public int christmasDiscount(int days){
-        ChristmasDiscount christmasDiscount = new ChristmasDiscount(days);
-        return christmasDiscount.discountPrice();
-    }
-
-    public int dayDiscount(LocalDate date, List<Order> foodList){
-        if(WeekInfo.from(date.getDayOfWeek()).equals(WeekInfo.WEEKDAYS)){
-            // WeekdaysDiscount
-            WeekdaysDiscount weekdaysDiscount = new WeekdaysDiscount(foodList);
-            return weekdaysDiscount.discountPrice();
-        }else{
-            // WeekendsDiscount
-            WeekendsDiscount weekendsDiscount = new WeekendsDiscount(foodList);
-            return weekendsDiscount.discountPrice();
+    public int totalBenefit(List<Discount> eventList){
+        int totalPrice = 0;
+        for(Discount event:eventList){
+            if(event != null)
+                totalPrice += event.getPrice();
         }
+        return totalPrice;
     }
 
-    public int specialDiscount(int days){
-        SpecialDiscount specialDiscount = new SpecialDiscount(days);
-        return specialDiscount.discountPrice();
-    }
-
-    public int freeDiscount(int beforeDiscount){
-        FreeDiscount freeDiscount = new FreeDiscount(beforeDiscount);
-        return freeDiscount.discountPrice();
-    }
-
-    public int totalBenefit(int christmasPrice, int dayPrice, int specialPrice, int freePrice){
-        return christmasPrice + dayPrice + specialPrice + freePrice;
-    }
-
-    public int afterDiscount(int beforeDiscount, int totalDiscount, int freePrice){
-        return beforeDiscount - totalDiscount + freePrice;
+    public int afterDiscount(int beforeDiscount, int totalDiscount){
+        if(beforeDiscount > 120000){
+            return beforeDiscount - totalDiscount + Menu.CHAMPAGNE.getPrice();
+        }
+        return beforeDiscount - totalDiscount;
     }
 
 }

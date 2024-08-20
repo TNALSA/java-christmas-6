@@ -1,10 +1,9 @@
 package view;
 
+import domain.Discount;
 import domain.Order;
 import domain.constants.WeekInfo;
 import message.OutputMessage;
-import service.discount.WeekdaysDiscount;
-import service.discount.WeekendsDiscount;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -31,42 +30,35 @@ public class OutputView {
 
      public void showBeforePrice(int price){
          System.out.println(OutputMessage.BEFORE_DISCOUNT.getMessage());
-         System.out.println(price + OutputMessage.WON.getMessage());
+         System.out.println(formmatter.format(price) + OutputMessage.WON.getMessage());
          System.out.println();
      }
 
      public void showFreeMenu(Order isFree){
         System.out.println(OutputMessage.PRESENTATION.getMessage());
-         if(isFree == null){
-             System.out.println("없음");
-         }else {
+
+         if(isFree != null){
              System.out.print(isFree.getName() + " " + isFree.getCount() + OutputMessage.UNIT.getMessage());
          }
+
+         if(isFree == null){
+             System.out.println("없음");
+         }
+
          System.out.println();
      }
 
-     public void showBenefitHistory(int beforeDiscount, int christmasPrice, LocalDate date, int dayPrice, int specialPrice, int freePrice){
-         System.out.println(OutputMessage.BENEFIT_DETAILS.getMessage());
-
-        if(beforeDiscount > 10000){
-            System.out.println(OutputMessage.CHRISTMAS_DDAY_DISCOUNT.getMessage() + formmatter.format(Math.negateExact(christmasPrice)) + OutputMessage.WON.getMessage());
-
-            if(WeekInfo.from(date.getDayOfWeek()).equals(WeekInfo.WEEKDAYS)){
-                System.out.println(OutputMessage.WEEKSDAY_DISCOUNT.getMessage() + formmatter.format(Math.negateExact(dayPrice)) + OutputMessage.WON.getMessage());
-            }
-            if(WeekInfo.from(date.getDayOfWeek()).equals(WeekInfo.WEEKENDS)){
-                System.out.println(OutputMessage.WEEKEND_DISCOUNT.getMessage() + formmatter.format(Math.negateExact(dayPrice))+ OutputMessage.WON.getMessage());
-            }
-
-            System.out.println(OutputMessage.SPECIAL_DISCOUNT.getMessage() + formmatter.format(Math.negateExact(specialPrice)) + OutputMessage.WON.getMessage());
-
-            System.out.println(OutputMessage.FREE_EVENT.getMessage() + formmatter.format(Math.negateExact(freePrice)) + OutputMessage.WON.getMessage());
-        }
-
-        if(beforeDiscount < 10000){
+     public void showBenefitHistory(List<Discount> eventList){
+        System.out.println(OutputMessage.BENEFIT_DETAILS.getMessage());
+        if(eventList.isEmpty())
             System.out.println("없음");
-        }
 
+        if(!eventList.isEmpty()){
+            for(Discount event: eventList){
+                if(event != null)
+                    System.out.println(event.getName() + ": " + formmatter.format(-1 * event.getPrice()) + "원");
+            }
+        }
          System.out.println();
      }
 

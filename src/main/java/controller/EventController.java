@@ -1,24 +1,26 @@
 package controller;
 
+import domain.Discount;
 import domain.Order;
-import message.OutputMessage;
-import service.OrderServiceImpl;
+import domain.constants.WeekInfo;
+import service.order.OrderServiceImpl;
+import service.event.EventServiceImpl;
 import view.InputView;
 import view.OutputView;
-
 import java.time.LocalDate;
 import java.util.*;
 
 public class EventController {
     private final OutputView outputView = new OutputView();
     private final InputView inputView = new InputView();
-    private OrderServiceImpl orderServiceImpl = new OrderServiceImpl();
+    OrderServiceImpl orderServiceImpl = new OrderServiceImpl();
+    EventServiceImpl eventServiceImpl = new EventServiceImpl();
     String date, order;
     int beforeDiscount = 0, totalDiscount = 0, afterDiscount = 0;
-    int christmasPrice=0, dayPrice=0, specialPrice=0, freePrice = 0;
-
     List<Order> foodList = new ArrayList<Order>();
-    public void eventStart(){
+    List<Discount> eventList = new ArrayList<>();
+
+    public void start(){
         outputView.welcome();
         date = inputView.readDate();
         order = inputView.order();
@@ -36,7 +38,7 @@ public class EventController {
         benefitHistory(Integer.parseInt(date), foodList);
 
         // 총혜택 금액
-        totalBenefit(christmasPrice, dayPrice, specialPrice, freePrice);
+        totalBenefit();
 
         //할인 후 예상 결제 금액
         afterDiscount(beforeDiscount, totalDiscount);
@@ -72,24 +74,28 @@ public class EventController {
 
     // 혜택 내역
     public void benefitHistory(int days, List<Order> foodList){
-        LocalDate date = LocalDate.of(2023, 12, days);
+        LocalDate date = LocalDate.of(2023,12,days);
+
         if(beforeDiscount > 10000){
-            christmasPrice = orderServiceImpl.christmasDiscount(days);
-            dayPrice = orderServiceImpl.dayDiscount(date, foodList);
-            specialPrice = orderServiceImpl.specialDiscount(days);
-            freePrice = orderServiceImpl.freeDiscount(beforeDiscount);
+            eventList.add(eventServiceImpl.christmasEvent(days));
+            eventList.add(eventServiceImpl.specialEvent(days));
+            eventList.add(eventServiceImpl.giftEvent(beforeDiscount));
+            if(WeekInfo.from(date.getDayOfWeek()).equals(WeekInfo.WEEKENDS))
+                eventList.add(eventServiceImpl.weekendsEvent(foodList));
+            if (WeekInfo.from(date.getDayOfWeek()).equals(WeekInfo.WEEKDAYS))
+                eventList.add(eventServiceImpl.weekdaysEvent(foodList));
         }
 
-        outputView.showBenefitHistory(beforeDiscount, christmasPrice, date, dayPrice, specialPrice, freePrice);
+        outputView.showBenefitHistory(eventList);
     }
 
-    public void totalBenefit(int christmasPrice, int dayPrice, int specialPrice, int freePrice){
-        totalDiscount = orderServiceImpl.totalBenefit(christmasPrice, dayPrice, specialPrice, freePrice);
+    public void totalBenefit(){
+        totalDiscount = orderServiceImpl.totalBenefit(eventList);
         outputView.showTotalBenefit(totalDiscount);
     }
 
     public void afterDiscount(int beforeDiscount, int totalDiscount){
-         afterDiscount = orderServiceImpl.afterDiscount(beforeDiscount, totalDiscount, freePrice);
+         afterDiscount = orderServiceImpl.afterDiscount(beforeDiscount, totalDiscount);
          outputView.showAfterDiscount(afterDiscount);
     }
 
