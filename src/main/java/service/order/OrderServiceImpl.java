@@ -3,8 +3,7 @@ package service.order;
 import domain.Discount;
 import domain.Order;
 import domain.constants.Menu;
-import message.ErrorMessage;
-import service.order.OrderService;
+import message.Error;
 
 import java.util.*;
 
@@ -25,14 +24,14 @@ public class OrderServiceImpl implements OrderService {
         int totalOrderCount = 0;
         for(int i=0 ; i<foodList.size() ; i++){
             Menu.from(foodList.get(i).getName());
-            if(foodList.get(i).getCount()<1){throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());}
+            if(foodList.get(i).getCount()<1){throw new IllegalArgumentException(Error.INVALID_ORDER.getMessage());}
             for(int j = i+1 ; j<foodList.size() ; j++){
-                if(foodList.get(i).getName().equals(foodList.get(j).getName())){throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());}
+                if(foodList.get(i).getName().equals(foodList.get(j).getName())){throw new IllegalArgumentException(Error.INVALID_ORDER.getMessage());}
             }
             totalOrderCount += foodList.get(i).getCount();
         }
         if(totalOrderCount >= 20){
-            throw new IllegalArgumentException(ErrorMessage.INVALID_ORDER.getMessage());
+            throw new IllegalArgumentException(Error.INVALID_ORDER.getMessage());
         }
     }
 

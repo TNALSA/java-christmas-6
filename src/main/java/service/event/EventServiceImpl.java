@@ -11,10 +11,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class EventServiceImpl implements EventService {
-    private final int EVENT_START = 1;
-    private final int EVENT_END = 25;
-    private int STANDARD = 1000;
-
 
     @Override
     public Discount christmasEvent(int days) {
